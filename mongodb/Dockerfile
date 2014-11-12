@@ -14,7 +14,10 @@ RUN echo 'deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen
 RUN apt-get update && apt-get install -y mongodb-org
 
 # Create the MongoDB data directory
-RUN mkdir -p /data/db
+RUN mkdir -p /data/mongodb
+
+# Copy the etc files
+COPY etc/ /etc/
 
 # Expose port #27017 from the container to the host
 EXPOSE 27017
