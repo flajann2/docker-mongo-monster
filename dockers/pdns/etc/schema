@@ -10,6 +10,10 @@ CREATE TABLE domains (
 
 CREATE UNIQUE INDEX name_index ON domains(name);
 
+INSERT INTO domains VALUES (1,'.',NULL,NULL,'NATIVE',NULL,NULL);
+INSERT INTO domains VALUES (2,'localhost',NULL,NULL,'NATIVE',NULL,NULL);
+INSERT INTO domains VALUES (3,'0.0.127.in-addr.arpa',NULL,NULL,'NATIVE',NULL,NULL);
+INSERT INTO domains VALUES (4,'srv',NULL,NULL,'NATIVE',NULL,NULL);
 
 CREATE TABLE records (
   id                    INTEGER PRIMARY KEY,
@@ -30,6 +34,47 @@ CREATE INDEX nametype_index ON records(name,type);
 CREATE INDEX domain_id ON records(domain_id);
 CREATE INDEX orderindex ON records(ordername);
 
+INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (1,'','NS','A.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'a.root-servers.net','A','198.41.0.4',3600000,0,NULL),
+(1,'','NS','B.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'b.root-servers.net','A','192.228.79.201',3600000,0,NULL),
+(1,'','NS','C.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'c.root-servers.net','A','192.33.4.12',3600000,0,NULL),
+(1,'','NS','D.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'d.root-servers.net','A','128.8.10.90',3600000,0,NULL),
+(1,'','NS','E.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'e.root-servers.net','A','192.203.230.10',3600000,0,NULL),
+(1,'','NS','F.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'f.root-servers.net','A','192.5.5.241',3600000,0,NULL),
+(1,'','NS','G.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'g.root-servers.net','A','192.112.36.4',3600000,0,NULL),
+(1,'','NS','H.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'h.root-servers.net','A','128.63.2.53',3600000,0,NULL),
+(1,'','NS','I.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'i.root-servers.net','A','192.36.148.17',3600000,0,NULL),
+(1,'','NS','J.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'j.root-servers.net','A','192.58.128.30',3600000,0,NULL),
+(1,'','NS','K.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'k.root-servers.net','A','193.0.14.129',3600000,0,NULL),
+(1,'','NS','L.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'l.root-servers.net','A','198.32.64.12',3600000,0,NULL),
+(1,'','NS','M.ROOT-SERVERS.NET',3600000,0,NULL),
+(1,'m.root-servers.net','A','202.12.27.33',3600000,0,NULL);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (2,'localhost','SOA','@ root 42 10800 36288000 604800 86400',86400,0,NULL),
+(2,'localhost','NS','localhost',86400,0,NULL),
+(2,'localhost','A','127.0.0.1',86400,0,NULL),
+(2,'localhost','AAAA','::1',86400,0,NULL);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (3,'0.0.127.in-addr.arpa','SOA','localhost root.localhost 1997022700 28800 14400 3600000 86400',86400,0,NULL),
+(3,'0.0.127.in-addr.arpa','NS','localhost',86400,0,NULL),
+(3,'1.0.0.127.in-addr.arpa','PTR','localhost',86400,0,NULL);
+
+INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (4,'srv','SOA','@ root 42 10800 36288000 604800 86400',86400,0,NULL),
+(4,'srv','NS','localhost',60,0,NULL),
+(4,'srv','AAAA','::1',60,0,NULL),
+(4,'srv','A','127.0.0.1',60,0,NULL),
+(4,'test.srv','A','127.0.0.1',60,0,NULL);
 
 CREATE TABLE supermasters (
   ip                    VARCHAR(64) NOT NULL,
@@ -38,7 +83,6 @@ CREATE TABLE supermasters (
 );
 
 CREATE UNIQUE INDEX ip_nameserver_pk ON supermasters(ip, nameserver);
-
 
 CREATE TABLE comments (
   id                    INTEGER PRIMARY KEY,
@@ -54,7 +98,6 @@ CREATE INDEX comments_domain_id_index ON comments (domain_id);
 CREATE INDEX comments_nametype_index ON comments (name, type);
 CREATE INDEX comments_order_idx ON comments (domain_id, modified_at);
 
-
 CREATE TABLE domainmetadata (
  id                     INTEGER PRIMARY KEY,
  domain_id              INT NOT NULL,
@@ -63,7 +106,6 @@ CREATE TABLE domainmetadata (
 );
 
 CREATE INDEX domainmetaidindex ON domainmetadata(domain_id);
-
 
 CREATE TABLE cryptokeys (
  id                     INTEGER PRIMARY KEY,
@@ -74,7 +116,6 @@ CREATE TABLE cryptokeys (
 );
 
 CREATE INDEX domainidindex ON cryptokeys(domain_id);
-
 
 CREATE TABLE tsigkeys (
  id                     INTEGER PRIMARY KEY,
