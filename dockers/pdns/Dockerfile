@@ -3,13 +3,19 @@ MAINTAINER Fred Mitchell
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -y -q install pdns-backend-sqlite3 sqlite3
-RUN mkdir -p /db
+RUN apt-get update && apt-get -y -q install pdns-backend-sqlite3 sqlite3 ruby2.0
+RUN mkdir -p /db /rcmd
+
 COPY etc/ /etc/
+COPY rcmd/ /rcmd/
+
 RUN sqlite3 /db/pdns.db < /etc/schema
 
+RUN gem install sinatra thin sqlite3 --no-ri --no-rdoc
+
+
 EXPOSE     53
-EXPOSE     80
+EXPOSE     2001
 
 ENTRYPOINT [ "/usr/sbin/pdns_server" ]
 CMD        [ "--config-dir=/etc/", "--master", "--daemon=no" ]
