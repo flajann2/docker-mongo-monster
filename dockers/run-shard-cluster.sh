@@ -19,8 +19,8 @@ docker run --name=shard5.srv  -d --hostname=shard5.srv mongo/shard-rep
 docker run --name=shard6.srv  -d --hostname=shard6.srv mongo/shard-rep
 docker run --name=shard7.srv  -d --hostname=shard7.srv mongo/shard-rep
 
-echo "Waiting 30 seconds for everything to settle"
-sleep 30
+echo "Waiting 60 seconds for everything to settle"
+sleep 60
 
 # MongoS gateway. Access point to the shards.
 # We can have more than one of these, and we definitely should
