@@ -12,4 +12,4 @@ EXPOSE     53
 EXPOSE     80
 
 ENTRYPOINT [ "/usr/sbin/pdns_server" ]
-CMD        [ "--config-dir", "/etc/", "--master", "--daemon=no"  ]
+CMD        [ "--config-dir=/etc/", "--master", "--daemon=no" ]
