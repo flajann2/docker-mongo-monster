@@ -17,3 +17,6 @@ docker stop shard4.srv
 docker stop shard5.srv
 docker stop shard6.srv
 docker stop shard7.srv
+
+# And finally, take out the name server
+docker stop pdns.srv

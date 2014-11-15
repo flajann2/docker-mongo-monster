@@ -7,6 +7,11 @@
 # Shut down host's mongodb, if there
 sudo service mongodb stop
 
+# Name server
+docker start pdns.srv
+
+sleep 10
+
 # Config servers
 docker start cfg0.srv
 docker start cfg1.srv
@@ -22,7 +27,7 @@ docker start shard5.srv
 docker start shard6.srv
 docker start shard7.srv
 
-echo "Waiting 30 seconds for everything to settle"
-sleep 30
+echo "Waiting 60 seconds for everything to settle"
+sleep 60
 
 docker start mongos.srv

@@ -18,9 +18,8 @@ function launch { # (name, image)
     name=$1
     image=$2
     other=$3
-    docker run --name=$name -d --hostname=$name --dns=$PDNS $other $image && register $name
+    docker run --name=$name -d --hostname=$name --link=pdns.srv:pdns.srv  --dns=$PDNS $other $image && register $name
 }
-
 
 # Start the all-important DNS server for this host's cluster.
 # TODO: Use the Ambassador pattern to tie together a cluster across
@@ -28,9 +27,10 @@ function launch { # (name, image)
 docker run --name=pdns.srv -d --hostname=pdns.srv pdns
 getip pdns.srv
 PDNS=$ip
+sleep 30
 register pdns.srv
 echo "PDNS Server is on $PDNS"
-sleep 10
+
 
 # Config servers
 launch cfg0.srv mongo/shard-config
@@ -48,7 +48,7 @@ launch shard6.srv mongo/shard-rep
 launch shard7.srv mongo/shard-rep
 
 echo "Waiting 60 seconds for everything to settle"
-sleep 30
+sleep 60
 
 # MongoS gateway. Access point to the shards.
 launch mongos.srv mongo/shard-s --publish=27017:27017
