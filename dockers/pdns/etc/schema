@@ -34,8 +34,6 @@ CREATE INDEX nametype_index ON records(name,type);
 CREATE INDEX domain_id ON records(domain_id);
 CREATE INDEX orderindex ON records(ordername);
 
-CREATE UNIQUE INDEX name_type_domain_index on (name, type, domain_id);
-
 INSERT INTO records (domain_id, name, type, content, ttl, prio, change_date) VALUES (1,'','NS','A.ROOT-SERVERS.NET',3600000,0,NULL),
 (1,'a.root-servers.net','A','198.41.0.4',3600000,0,NULL),
 (1,'','NS','B.ROOT-SERVERS.NET',3600000,0,NULL),
