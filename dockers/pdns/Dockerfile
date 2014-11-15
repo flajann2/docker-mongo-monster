@@ -3,7 +3,7 @@ MAINTAINER Fred Mitchell
 
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update && apt-get -y -q install pdns-backend-sqlite3 sqlite3 ruby2.0
+RUN apt-get update && apt-get -y -q install pdns-backend-sqlite3 sqlite3 ruby2.0 supervisor
 RUN mkdir -p /db /rcmd
 
 COPY etc/ /etc/
