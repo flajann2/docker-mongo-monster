@@ -1,4 +1,3 @@
-sh.addShard("sh0")
-sh.addShard("sh1")
-sh.addShard("sh2")
-
+sh.addShard("shard0.srv")
+sh.addShard("shard1.srv")
+sh.addShard("shard2.srv")
