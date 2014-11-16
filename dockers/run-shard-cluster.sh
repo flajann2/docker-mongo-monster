@@ -28,9 +28,10 @@ docker run --name=pdns.srv -d --hostname=pdns.srv pdns
 getip pdns.srv
 PDNS=$ip
 sleep 30
+
+# Register the name server with itself (later we'll use this)
 register pdns.srv
 echo "PDNS Server is on $PDNS"
-
 
 # Config servers
 launch cfg0.srv mongo/shard-config

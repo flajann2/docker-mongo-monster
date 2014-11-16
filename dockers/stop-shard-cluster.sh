@@ -19,4 +19,7 @@ docker stop shard6.srv
 docker stop shard7.srv
 
 # And finally, take out the name server
-docker stop pdns.srv
+# docker stop pdns.srv
+
+echo "Leave pdns.srv running for now, since we'll loose its"
+echo "IP address otherwise. This will"
