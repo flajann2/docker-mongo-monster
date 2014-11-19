@@ -48,6 +48,15 @@ launch shard5.srv mongo/shard-rep
 launch shard6.srv mongo/shard-rep
 launch shard7.srv mongo/shard-rep
 
+launch shard8.srv mongo/shard-rep
+launch shard9.srv mongo/shard-rep
+launch shard10.srv mongo/shard-rep
+launch shard11.srv mongo/shard-rep
+launch shard12.srv mongo/shard-rep
+launch shard13.srv mongo/shard-rep
+launch shard14.srv mongo/shard-rep
+launch shard15.srv mongo/shard-rep
+
 echo "Waiting 60 seconds for everything to settle"
 sleep 60
 

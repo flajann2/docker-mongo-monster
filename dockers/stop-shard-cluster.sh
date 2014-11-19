@@ -18,6 +18,15 @@ docker stop shard5.srv
 docker stop shard6.srv
 docker stop shard7.srv
 
+docker stop shard8.srv
+docker stop shard9.srv
+docker stop shard10.srv
+docker stop shard11.srv
+docker stop shard12.srv
+docker stop shard13.srv
+docker stop shard14.srv
+docker stop shard15.srv
+
 # And finally, take out the name server
 # docker stop pdns.srv
 

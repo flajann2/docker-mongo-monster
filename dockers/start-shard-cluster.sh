@@ -27,6 +27,15 @@ docker start shard5.srv
 docker start shard6.srv
 docker start shard7.srv
 
+docker start shard8.srv
+docker start shard9.srv
+docker start shard10.srv
+docker start shard11.srv
+docker start shard12.srv
+docker start shard13.srv
+docker start shard14.srv
+docker start shard15.srv
+
 echo "Waiting 60 seconds for everything to settle"
 sleep 60
 
