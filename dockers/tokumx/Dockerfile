@@ -3,8 +3,10 @@
 FROM       centos:centos6
 MAINTAINER Fred Mitchell
 
+RUN yum install tar -y
+
 RUN mkdir -p /data/tokumx
-RUN mkdir -r /tokumx/
+RUN mkdir -p /tokumx/
 
 COPY etc/ /etc/
 COPY tokumx-tar/ /tokumx/
