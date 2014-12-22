@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # DESTROY the containers for sharding (need only be run once)
 
-docker rmi -f mongo/shard-s
-docker rmi -f mongo/shard-config
-docker rmi -f mongo/shard-rep
-docker rmi -f mongo/basic
+docker rmi -f tokumx/toks-s
+docker rmi -f tokumx/toks-config
+docker rmi -f tokumx/toks-rep
+docker rmi -f tokumx/basic

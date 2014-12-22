@@ -2,7 +2,7 @@
 # Build the containers for sharding (need only be run once)
 
 docker build -t pdns --rm=true pdns
-docker build -t mongo/basic --rm=true mongodb
-docker build -t mongo/shard-s --rm=true shard-s
-docker build -t mongo/shard-config --rm=true shard-config
-docker build -t mongo/shard-rep --rm=true shard-rep
+docker build -t tokumx/basic --rm=true tokumx
+docker build -t tokumx/toks-s --rm=true toks-s
+docker build -t tokumx/toks-config --rm=true toks-config
+docker build -t tokumx/toks-rep --rm=true toks-rep

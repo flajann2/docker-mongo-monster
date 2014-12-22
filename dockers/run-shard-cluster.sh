@@ -34,33 +34,33 @@ register pdns.srv
 echo "PDNS Server is on $PDNS"
 
 # Config servers
-launch cfg0.srv mongo/shard-config
-launch cfg1.srv mongo/shard-config
-launch cfg2.srv mongo/shard-config
+launch cfg0.srv tokumx/toks-config
+launch cfg1.srv tokumx/toks-config
+launch cfg2.srv tokumx/toks-config
 
 # Actual shards (should be repl clusters, but for now...)
-launch shard0.srv mongo/shard-rep
-launch shard1.srv mongo/shard-rep
-launch shard2.srv mongo/shard-rep
-launch shard3.srv mongo/shard-rep
-launch shard4.srv mongo/shard-rep
-launch shard5.srv mongo/shard-rep
-launch shard6.srv mongo/shard-rep
-launch shard7.srv mongo/shard-rep
+launch shard0.srv  tokumx/toks-rep
+launch shard1.srv  tokumx/toks-rep
+launch shard2.srv  tokumx/toks-rep
+launch shard3.srv  tokumx/toks-rep
+launch shard4.srv  tokumx/toks-rep
+launch shard5.srv  tokumx/toks-rep
+launch shard6.srv  tokumx/toks-rep
+launch shard7.srv  tokumx/toks-rep
 
-launch shard8.srv mongo/shard-rep
-launch shard9.srv mongo/shard-rep
-launch shard10.srv mongo/shard-rep
-launch shard11.srv mongo/shard-rep
-launch shard12.srv mongo/shard-rep
-launch shard13.srv mongo/shard-rep
-launch shard14.srv mongo/shard-rep
-launch shard15.srv mongo/shard-rep
+launch shard8.srv  tokumx/toks-rep
+launch shard9.srv  tokumx/toks-rep
+launch shard10.srv tokumx/toks-rep
+launch shard11.srv tokumx/toks-rep
+launch shard12.srv tokumx/toks-rep
+launch shard13.srv tokumx/toks-rep
+launch shard14.srv tokumx/toks-rep
+launch shard15.srv tokumx/toks-rep
 
 echo "Waiting 60 seconds for everything to settle"
 sleep 60
 
 # MongoS gateway. Access point to the shards.
-launch mongos.srv mongo/shard-s --publish=27017:27017
+launch mongos.srv tokumx/toks-s --publish=27017:27017
 
 #TODO: setup the shards via a mongo client
