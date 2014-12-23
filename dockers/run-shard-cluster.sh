@@ -21,6 +21,18 @@ function launch { # (name, image)
     docker run --name=$name -d --hostname=$name --link=pdns.srv:pdns.srv  --dns=$PDNS $other $image && register $name
 }
 
+###############################################################
+# NOTE WELL
+# Firstly, TokuMX requires that transparent hugepages disabled.
+# for dockers, this must be done on the HOST system.
+sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled
+
+# Secondly, the local Mongo must NOT be running, since the MongoS port will be
+# exported here.
+sudo killall -r mongod
+###############################################################
+
+
 # Start the all-important DNS server for this host's cluster.
 # TODO: Use the Ambassador pattern to tie together a cluster across
 # multiple boxen.
