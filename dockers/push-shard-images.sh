@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Push images to our local repo
 
-REPO="docker-repo.srv:2061"
+REPO="docker-repo:2061"
 
 function tag_and_push {
     tag=$1
