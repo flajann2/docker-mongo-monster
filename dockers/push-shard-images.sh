@@ -10,8 +10,13 @@ function tag_and_push {
     docker push $REPO/$tag
 }
 
-tag_and_push pdns
-tag_and_push tokumx/basic
-tag_and_push tokumx/toks-s
-tag_and_push tokumx/toks-config
-tag_and_push tokumx/toks-rep
+
+function do_all {
+    tag_and_push pdns
+    tag_and_push tokumx/basic
+    tag_and_push tokumx/toks-s
+    tag_and_push tokumx/toks-config
+    tag_and_push tokumx/toks-rep
+}
+
+docker login https://$REPO && do_all
