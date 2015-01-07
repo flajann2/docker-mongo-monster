@@ -36,7 +36,7 @@ function launch_docker { # (name, image)
     #docker run --name=$name -d --hostname=$name --link=pdns.srv:pdns.srv  --dns=$PDNS $other $image && register $name
 }
 
-# Launch a Google Server Instance
+# Launch a Google Docker Server Instance
 function launch_sv { # name machinetype localssds
     name=$1
     machinetype=$2
@@ -60,8 +60,6 @@ function launch_sv { # name machinetype localssds
     echo "Base configuration of $name"
     gcutil ssh $name <<EOF
 sudo su -
-service docker start
-yum -y install lvm2
 lvmetad
 EOF
 
@@ -78,11 +76,9 @@ EOF
         gcutil ssh $name <<EOF
 sudo su -
 vgcreate ssdvol $lvmcanidates
-lvcreate -n ssd -L ${ssize}G ssdvol
-mkfs.ext4 /dev/mapper/ssdvol-ssd
-mkdir /data
-mount /dev/mapper/ssdvol-ssd /data
-echo "/dev/mapper/ssdvol-ssd /data ext4     defaults 1 1" >>/etc/fstab
+lvcreate --wipesignatures y -n data ssdvol -l 95%VG
+lvcreate --wipesignatures y -n metadata ssdvol -l 5%VG
+service docker start
 EOF
     fi
 }
