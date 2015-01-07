@@ -8,26 +8,18 @@ CLUSTER=$1
 SVS=$2
 SH_PER_SV=$3
 
-# 
+# Docker Repo login
 REPO="docker-repo:2061"
-SHARD_PORT=28000
+RUSER='prioridata'
+RPASS='WeL0veData'
+EMAIL='fred@prioridata.com'
+
+BEGIN_SHARD_PORT=28000
+let "END_SHARD_PORT = $BEGIN_SHARD_PORT + $SH_PER_SV - 1"
 ZONE="us-central1-a"
 BOOTDISKTYPE="pd-ssd"
-SDEV=(none /dev/sdb /dev/sdc /dev/sdd /dev/sde)
+SDEV=(none /dev/sdb /dev/sdc /dev/sdd /dev/sde /dev/sdf /dev/sdg /dev/sdh)
 LSSDSIZE=373
-
-# NOTE WELL: mongos will attach to the host's 27017 mongo port, so
-# the host mongodb must not be running on that port!!!!!
-
-function getip {
-    ip=$(docker inspect -f "{{.NetworkSettings.IPAddress}}" $1)
-}
-
-# parameter is the name of the running container
-function register {
-    getip $1
-    curl -H "Content-type: application/json" -X POST http://$PDNS:2001/name/$1/ip/$ip
-}
 
 function launch_docker { # (name, image)
     name=$1
@@ -60,6 +52,7 @@ function launch_sv { # name machinetype localssds
     echo "Base configuration of $name"
     gcutil ssh $name <<EOF
 sudo su -
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
 lvmetad
 EOF
 
@@ -78,7 +71,7 @@ sudo su -
 vgcreate ssdvol $lvmcanidates
 lvcreate --wipesignatures y -n data ssdvol -l 95%VG
 lvcreate --wipesignatures y -n metadata ssdvol -l 5%VG
-service docker start
+service docker start && docker login --email=$EMAIL --password=$RPASS --username=$RUSER https://$REPO
 EOF
     fi
 }
@@ -89,6 +82,11 @@ function launch_cfg { # (name, image)
     other=$3
     echo "launch_cfg($name, $image)"
     launch_sv $name n1-standard-1 1
+    gcutil ssh $name <<EOF
+sudo su -
+docker pull $REPO/$image
+docker run --name=$name -d --net='host' --publish=27019:27019 $REPO/$image 
+EOF
 }
 
 function launch_shs { # (name, image)
@@ -97,7 +95,15 @@ function launch_shs { # (name, image)
     other=$3
     echo "launch_shs($name, $image)"
     launch_sv $name n1-highmem-4 2
-    #docker run --name=$name -d --hostname=$name --link=pdns.srv:pdns.srv  --dns=$PDNS $other $image && register $name
+    gcutil ssh $name <<EOF
+sudo su -
+docker pull $REPO/$image
+EOF
+
+for port in $(seq $BEGIN_SHARD_PORT $END_SHARD_PORT);  do
+    echo "SHARD ${name}:${port}"
+    gcutil ssh $name "sudo docker run --name=${name}-${port} -d --publish=$port:27017 $REPO/$image"
+done
 }
 
 echo "Creating and running for cluster $CLUSTER: shards servers: $SVS, shards per server: $SH_PER_SV"
