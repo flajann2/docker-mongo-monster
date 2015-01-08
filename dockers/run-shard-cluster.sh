@@ -31,13 +31,14 @@ LSSDSIZE=373
 
 # Output of useful info
 SHARDFILE="shards.list"
+SHARDJS="add-shards.js"
 CFGFILE="configs.list"
 FLUMEFILE="flumes.list"
 SERVERFILE="servers.list"
 
 # start afresh
-rm $SHARDFILE $CFGFILE $FLUMEFILE $SERVERFILE &> /dev/null
-touch $SHARDFILE $CFGFILE $FLUMEFILE $SERVERFILE
+rm    $SHARDFILE $SHARDJS $CFGFILE $FLUMEFILE $SERVERFILE &> /dev/null
+touch $SHARDFILE $SHARDJS $CFGFILE $FLUMEFILE $SERVERFILE
 
 # Launch a Google Docker Server Instance
 function launch_sv { # name machinetype localssds data%opt metadata%opt work%opt
@@ -136,6 +137,7 @@ EOF
 
 for port in $(seq $BEGIN_SHARD_PORT $END_SHARD_PORT);  do
     echo "${name}:${port}" >>$SHARDFILE
+    echo "sh.addShard(\"${name}:${port}\");" >>$SHARDJS
     gcutil ssh $name "sudo docker run --name=${name}-${port} -d --publish=$port:27017 $REPO/$image"
 done
 }
