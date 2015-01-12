@@ -11,8 +11,8 @@ RUN mkdir -p /tokumx/
 COPY etc/ /etc/
 COPY tokumx-tar/ /tokumx/
 
-RUN cd /tokumx && tar xzf tokumx-e-2.0.0-linux-x86_64-main.tar.gz && mv tokumx-e-2.0.0-linux-x86_64/* .
-RUN cd /tokumx && rm -rf tokumx-e-2.0.0-linux-x86_64 tokumx-e-2.0.0-linux-x86_64-main.tar.gz
+RUN cd /tokumx && tar xzf tokumx-2.0.0-linux-x86_64-main.tar.gz && mv tokumx-2.0.0-linux-x86_64/* .
+RUN cd /tokumx && rm -rf tokumx-2.0.0-linux-x86_64 tokumx-2.0.0-linux-x86_64-main.tar.gz
 
 EXPOSE 27017
 ENTRYPOINT ["/tokumx/bin/mongod"]

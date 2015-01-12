@@ -41,7 +41,7 @@ rm    $SHARDFILE $SHARDJS $CFGFILE $FLUMEFILE $SERVERFILE &> /dev/null
 touch $SHARDFILE $SHARDJS $CFGFILE $FLUMEFILE $SERVERFILE
 
 # Launch a Google Docker Server Instance
-function launch_sv { # name machinetype localssds data%opt metadata%opt work%opt
+function launch_sv { # name machinetype localssds data%opt metadata%opt work%opt moreops_opt
     name=$1
     machinetype=$2
     localssds=$3
@@ -50,6 +50,9 @@ function launch_sv { # name machinetype localssds data%opt metadata%opt work%opt
     datacent=$4
     metacent=$5
     workcent=$6
+
+    # Optional parameters to pass to gcloud compute instance create
+    moreopts=$7
 
     if [[ -z $datacent  ]]; then
         datacent=95
@@ -71,7 +74,7 @@ function launch_sv { # name machinetype localssds data%opt metadata%opt work%opt
         --zone=$ZONE \
         --boot-disk-type=$BOOTDISKTYPE \
         --machine-type=$machinetype \
-        $lsd
+        $moreopts $lsd
 
     sleep 30
     echo "Base configuration of $name"
@@ -102,6 +105,7 @@ if (( $workcent > 0 )); then
     mkfs.xfs /dev/ssdvol/work
     mkdir /work
     mount /dev/ssdvol/work /work
+    ln -s /work /data
     echo "/dev/ssdvol/work /work defaults,barrier=0 1 1" >> /etc/fstab
 fi
 
@@ -116,7 +120,7 @@ function launch_cfg { # (name, image)
     other=$3
     echo "launch_cfg($name, $image)"
     echo "$name:$CFG_PORT" >>$CFGFILE
-    launch_sv $name n1-standard-1 1
+    launch_sv $name n1-standard-1 1 '' '' '' "--no-address"
     gcutil ssh $name <<EOF
 sudo su -
 docker pull $REPO/$image
@@ -129,7 +133,7 @@ function launch_shs { # (name, image)
     image=$2
     other=$3
     echo "launch_shs($name, $image)"
-    launch_sv $name n1-highmem-4 2
+    launch_sv $name n1-highmem-4 2  '' '' '' "--no-address"
     gcutil ssh $name <<EOF
 sudo su -
 docker pull $REPO/$image
