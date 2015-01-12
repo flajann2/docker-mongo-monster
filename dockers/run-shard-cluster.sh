@@ -120,7 +120,7 @@ function launch_cfg { # (name, image)
     other=$3
     echo "launch_cfg($name, $image)"
     echo "$name:$CFG_PORT" >>$CFGFILE
-    launch_sv $name n1-standard-1 1 '' '' '' "--no-address"
+    launch_sv $name n1-standard-1 1 #'' '' '' "--no-address"
     gcutil ssh $name <<EOF
 sudo su -
 docker pull $REPO/$image
@@ -133,7 +133,7 @@ function launch_shs { # (name, image)
     image=$2
     other=$3
     echo "launch_shs($name, $image)"
-    launch_sv $name n1-highmem-4 2  '' '' '' "--no-address"
+    launch_sv $name n1-highmem-4 2  #'' '' '' "--no-address"
     gcutil ssh $name <<EOF
 sudo su -
 docker pull $REPO/$image
