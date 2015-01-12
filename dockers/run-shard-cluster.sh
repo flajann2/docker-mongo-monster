@@ -8,6 +8,7 @@ CLUSTER=$1
 SVS=$2
 SH_PER_SV=$3
 FLUME_SV=$4 #opt
+let "SHARDS = $SVS * $SH_PER_SV"
 
 if [[ -z $CLUSTER ]]; then
   echo "./run-shard-cluster.sh CLUSTER-NAME NUM-SHARD-SERVERS NUM-SHARD-PER-SERVER FLUME-SERVERSopt"  
@@ -148,10 +149,11 @@ done
 
 # this function assumes parallelism and must check for FLUMEFILE to not only exist, 
 # but to have exactly 3 entries.
-function launch_flume_sv { # (name, image)
+function launch_flume_sv { # (name, image, num)
     name=$1
     image=$2
-    other=$3
+    num=$3
+    other=$4
     echo "launch_flume_sv($name, $image)"
 
     launch_sv $name n1-highmem-4 2 4 1 95
@@ -161,7 +163,7 @@ function launch_flume_sv { # (name, image)
     while [ $(wc -l <$CFGFILE) -lt 3 ]; do
         echo -n '.'
         sleep 2
-    done    
+    done
 
     cfgs=''
     c=''
@@ -171,11 +173,33 @@ function launch_flume_sv { # (name, image)
     done
     echo "CONFIG Servers: $cfgs"
 
+    sleep 10 # stabilazation
     gcutil ssh $name <<EOF
 sudo su -
 docker run --name=mongos -d --net=host --publish=27017:27017 $REPO/$image --configdb $cfgs
 EOF
     echo "$name" >> $FLUMEFILE
+
+    # If this is the first one, apply the shards
+    # Wait until all the shards are actually created
+    if [ $num -eq 0 ]; then
+        while [ $(wc -l <$SHARDFILE) -lt $SHARDS ]; do
+            echo -n '.'
+            sleep 2
+        done
+
+        sleep 10 # stabilization
+        # Do the shard mapping
+        shs=''
+        for s in $(sort $SHARDJS); do
+            shs="$shs $s "
+        done
+
+        echo "****** SHARDS: $shs ******"
+        gcutil ssh $name <<EOF
+mongo --eval '$shs'
+EOF
+    fi
 }
 
 echo "Creating and running for cluster $CLUSTER: shards servers: $SVS, shards per server: $SH_PER_SV"
@@ -212,6 +236,14 @@ done
 # flume baby servers (should be repl clusters, but for now...)
 if (( $FLUME_SV )); then
     for i in $(seq 0 $(($FLUME_SV - 1)) ); do
-        launch_flume_sv ${CLUSTER}-flume-baby$i tokumx/toks-s &
+        launch_flume_sv ${CLUSTER}-flume-baby$i tokumx/toks-s $i &
     done
 fi
+
+# Now wait for everything to complete.
+echo "Waiting for everything to complete. Please be paitent. Danke shöen."
+while [ $(ps | wc -l) -gt 6 ]; do
+    cc=$(ps | wc -l)
+    echo -n "$cc"
+    sleep 1
+done
