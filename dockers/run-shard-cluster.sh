@@ -147,7 +147,7 @@ for port in $(seq $BEGIN_SHARD_PORT $END_SHARD_PORT);  do
 done
 }
 
-# this function assumes parallelism and must check for FLUMEFILE to not only exist, 
+# this function assumes parallelism and must check for CFGFILE to not only exist, 
 # but to have exactly 3 entries.
 function launch_flume_sv { # (name, image, num)
     name=$1
@@ -210,23 +210,10 @@ echo "Creating and running for cluster $CLUSTER: shards servers: $SVS, shards pe
 # for dockers, this must be done on the HOST system.
 sudo echo never > /sys/kernel/mm/transparent_hugepage/enabled
 
-# Start the all-important DNS server for this host's cluster.
-# TODO: Use the Ambassador pattern to tie together a cluster across
-# multiple boxen.
-#docker run --name=pdns.srv -d --hostname=pdns.srv pdns
-#getip pdns.srv
-#PDNS=$ip
-#sleep 30
-
-# Register the name server with itself (later we'll use this)
-#register pdns.srv
-#echo "PDNS Server is on $PDNS"
-
 # Config servers
 for i in $(seq 0 2); do
     launch_cfg ${CLUSTER}-cfg$i tokumx/toks-config &
 done
-
 
 # Actual shards (should be repl clusters, but for now...)
 for i in $(seq 0 $(($SVS - 1)) ); do
